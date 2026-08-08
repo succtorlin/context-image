@@ -69,7 +69,7 @@ Upstream step 9 says "inspect each image." That is not enough. **Baked-in text f
 Never declare a render finished on a full-size look. Run this instead:
 
 ```bash
-python3 ~/.claude/skills/guizang-material-illustration/scripts/proofread.py OUT.png
+python3 ~/.claude/skills/context-image/scripts/proofread.py OUT.png
 ```
 
 It slices the image into overlapping upscaled tiles and prints their paths. **Read every tile** and compare each label character-by-character against the exact strings the prompt specified. Useful flags:

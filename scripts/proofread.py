@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Post-render proofread helper for guizang-material-illustration.
+"""Post-render proofread helper for the context-image skill.
 
 Text baked into a generated illustration fails SILENTLY: GPT Image will render
 "Misaiignment" where the prompt said "Misalignment", and at full size the word
