@@ -8,7 +8,7 @@ Sections 1 and 4 contain machine- and brand-specific values (a credential path, 
 
 ## 1. Image backend routing (overrides SKILL.md step 8)
 
-There is no `imagegen` skill on this machine. Use this ladder instead.
+Most installs have no `imagegen` skill. Use this ladder instead.
 
 **Selection rule: labels render inside the image, so text fidelity decides the model.** GPT-Image and Gemini image models render embedded text reliably; FLUX historically garbles it. Never pick a backend on speed or cost when the illustration carries labels.
 
@@ -18,7 +18,7 @@ There is no `imagegen` skill on this machine. Use this ladder instead.
 | 2 | `generate-image` | OpenRouter (Gemini 3.1 Flash Image, FLUX.2 Pro) | Fallback. **Select the Gemini image model, not FLUX**, whenever the illustration has labels. |
 | 3 | `gemini-image` | Gemini via `config/secrets.md` | Image-to-image work: pass reference URLs ahead of the prompt text. |
 
-### Chosen route: `baoyu-image-gen` on OpenAI (decided 2026-08-08)
+### Worked example: `baoyu-image-gen` on OpenAI
 
 Credential lives in `~/.baoyu-skills/.env` as `OPENAI_API_KEY` (skill-scoped, `chmod 600`, never in shell history or a repo). Load priority is `CLI args > EXTEND.md > env vars > ~/.baoyu-skills/.env`.
 
@@ -44,7 +44,7 @@ Flag rules for this skill:
 
 If the key is missing or the call fails auth, **stop at step 7 and deliver the prompt plan** — written prompts, labels, aspect ratio, style block — and say plainly that generation did not run. Never present an ungenerated plan as a finished deliverable.
 
-> A Gemini key exists in `web-app/.env.local` for the ScheduleOpt app's text calls. It is a project secret scoped to that app. Do not copy it into a global skill config.
+> Keep project-scoped API keys in their own project. Never copy one into a global skill config.
 
 ## 2. Label language (overrides SKILL.md "Text Rules")
 
@@ -64,7 +64,7 @@ Everything else in upstream's Text Rules still applies — no dense in-image leg
 
 ## 3. Post-render proofread (overrides SKILL.md step 9 — MANDATORY)
 
-Upstream step 9 says "inspect each image." That is not enough. **Baked-in text fails silently**: the model substitutes a letter, and at full size the word still looks right. Measured on this machine — a prompt demanding `Misalignment` rendered `Misaiignment`, and it passed a full-size eyeball check.
+Upstream step 9 says "inspect each image." That is not enough. **Baked-in text fails silently**: the model substitutes a letter, and at full size the word still looks right. Measured — a prompt demanding `Misalignment` rendered `Misaiignment`, and it passed a full-size eyeball check.
 
 Never declare a render finished on a full-size look. Run this instead:
 
@@ -90,9 +90,9 @@ Any failure is a **regeneration trigger**, never a ship-anyway. When regeneratin
 
 Record the proofread outcome alongside the prompt and image per §5, so a later reader knows the render was actually verified rather than glanced at.
 
-## 4. AristAI brand preset (overrides the default IKB blue in `references/visual-style.md`)
+## 4. Brand preset — worked example (overrides the default IKB blue in `references/visual-style.md`)
 
-Use this whenever the illustration is for AristAI / ScheduleOpt — landing pages, decks, docs, provost-facing exports. It matches the shipped "instrument" design system, so generated art sits inside the product without a seam.
+This is one product's preset, shown in full so the shape of an override is clear — dual grounds, a single accent, semantics reserved for meaning, mono numerals. Substitute your own tokens.
 
 **Dark ground (default — matches the landing page and product shell):**
 - Ground `#0b0b11` near-black · ink `#f5f2e9` warm off-white
@@ -111,7 +111,7 @@ Use this whenever the illustration is for AristAI / ScheduleOpt — landing page
 ## 5. Output conventions
 
 - Save images to the task folder alongside the prompt that made them, per upstream step 10.
-- Working files for this repo go in the session scratchpad, not in `web-app/public/` — promote an asset into the repo only when it is actually being shipped, and compress it first (the product's perf gate is **≤ 30 KB per decorative asset**, see the `fantastic-ui` skill).
+- Keep working files in a scratch or task folder, not in a product's public asset directory — promote an asset only when it is actually shipping, and compress it first (a sensible gate is **≤ 30 KB per decorative asset**).
 - Name files by content, not by index: `pathway-misalignment-cycle.webp`, not `image-3.png`.
 
 ## 6. Tracking upstream
