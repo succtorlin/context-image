@@ -8,7 +8,9 @@ Sections 1 and 4 contain machine- and brand-specific values (a credential path, 
 
 ## 1. Image backend routing (overrides SKILL.md step 8)
 
-Most installs have no `imagegen` skill. Use this ladder instead.
+For static images, prefer the available built-in image generation tool and follow its reference-image and editing requirements. Honor the user's model preference where selection is exposed; do not claim a specific model when it is not exposed. No API key is required for the built-in tool. The table below is a fallback for environments without that tool, not a requirement to install another backend.
+
+Interactive simulations and machine films use the optional code-rendered route in `references/machine-integration.md`; this does not replace the image tool for ordinary image generation or image edits.
 
 **Selection rule: labels render inside the image, so text fidelity decides the model.** GPT-Image and Gemini image models render embedded text reliably; FLUX historically garbles it. Never pick a backend on speed or cost when the illustration carries labels.
 
@@ -42,7 +44,7 @@ Flag rules for this skill:
 - Aspect ratio by destination: `16:9` slides and landing bands · `4:3` docs and reports · `3:4` social cards · `1:1` avatars and icons.
 - Generation is sequential by default. Keep it that way — parallel only on explicit request, since regeneration-on-QA-failure is the normal path here.
 
-If the key is missing or the call fails auth, **stop at step 7 and deliver the prompt plan** — written prompts, labels, aspect ratio, style block — and say plainly that generation did not run. Never present an ungenerated plan as a finished deliverable.
+If no built-in image tool is available and the selected fallback lacks its key or fails authentication, **stop at step 7 and deliver the prompt plan** — written prompts, labels, aspect ratio, style block — and say plainly that generation did not run. Never present an ungenerated plan as a finished deliverable.
 
 > Keep project-scoped API keys in their own project. Never copy one into a global skill config.
 
@@ -69,7 +71,7 @@ Upstream step 9 says "inspect each image." That is not enough. **Baked-in text f
 Never declare a render finished on a full-size look. Run this instead:
 
 ```bash
-python3 ~/.claude/skills/context-image/scripts/proofread.py OUT.png
+python3 <resolved-context-image-directory>/scripts/proofread.py OUT.png
 ```
 
 It slices the image into overlapping upscaled tiles and prints their paths. **Read every tile** and compare each label character-by-character against the exact strings the prompt specified. Useful flags:

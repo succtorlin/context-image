@@ -1,6 +1,6 @@
 ---
 name: context-image
-description: Generate labeled explanatory illustrations, material-style 3D diagrams, and beautified chart visuals from articles, notes, product concepts, reports, tutorials, screenshots, or raw data. Produces the central "context image" that explains an idea inside a doc, slide, card, or landing page — labels rendered in the image, then proofread under magnification before delivery. Use when the user asks for a diagram, explanatory graphic, concept illustration, process/loop/system diagram, chart beautification, report figure, or supporting image; also triggers on 配图, 带字插图, 解释图, 图解插画, 概念拆解图, 图表美化, 数据图美化, 3D 图表, 汇报配图, 内容配图.
+description: Generate labeled explanatory illustrations, material-style 3D diagrams, mechanical cutaways and exploded views, and beautified chart visuals from articles, notes, product concepts, reports, tutorials, screenshots, or raw data. Produces the central "context image" that explains an idea inside a doc, slide, card, or landing page — labels rendered in the image, then proofread under magnification before delivery. Use when the user asks for a diagram, explanatory graphic, concept illustration, process/loop/system diagram, chart beautification, report figure, or supporting image; also triggers on 配图, 带字插图, 解释图, 图解插画, 概念拆解图, 图表美化, 数据图美化, 3D 图表, 汇报配图, 内容配图.
 ---
 
 # Guizang Material Illustration
@@ -10,6 +10,12 @@ Create supporting illustrations from source text, screenshots, or chart data. Th
 This skill focuses on the illustration layer, not the full social-card layout. If the user also needs Xiaohongshu/WeChat card composition, pair this skill with the social-card skill: use this skill for the central illustrations, then place the generated images in the card template.
 
 This skill does not replace the user's PPT skill or the Guizang social-card text-layout skill. Use those skills for slide structure and 3:4 text/card layout. Use this skill for the visual asset that goes into those layouts.
+
+## Mechanical illustration and optional simulation
+
+For machines, hardware, physical mechanisms, cutaways, exploded views, or meaningful flow/heat effects, read [references/machine-integration.md](references/machine-integration.md) before composing the scene. It adapts Machine's physical construction guidance to this skill's visual system.
+
+Default to a static explanatory image. Route to the installed `machine` skill only when the user requests an interactive model, computed simulation, or machine film. Keep chart, humanities, and ordinary process-diagram workflows unchanged. Preserve the requested output format, language, palette, and label limits.
 
 ## Workflow
 
@@ -30,6 +36,8 @@ This skill does not replace the user's PPT skill or the Guizang social-card text
    - Layer stack: architecture, hierarchy, dependencies.
    - Data-first scene: chart or metric panel embedded in a topical scene.
    - Scientific mechanism: object, parts, forces, reactions, or biological process.
+   - Mechanical cutaway: reveal hidden parts with solid section faces and clear flow paths.
+   - Exploded assembly: separate parts along assembly axes while preserving their relationships.
    - Text scene: a literary, historical, or everyday scene that anchors an abstract idea.
 7. Write one image prompt per illustration. Make the prompt describe exact label text or chart data, aspect ratio, safe margins, references used, and shared Guizang visual style.
 8. Generate the images with the `imagegen` skill or built-in image generation tool when available.

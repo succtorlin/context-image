@@ -1,134 +1,234 @@
 <div align="center">
 
-# context-image
+# Context Image
 
-**The one image that explains the idea.**
+### Turn complex ideas into images people understand.
 
-An agent skill for Claude Code that turns an article, a concept, a process, a screenshot, or a table of numbers into a labeled explanatory illustration — and then proofreads the labels under magnification before it lets you ship.
+**Labeled illustrations · Material-style diagrams · Mechanical cutaways · Chart visuals**
 
-`/context-image` · diagrams · chart beautification · report figures · 配图 · 图解 · 图表美化
+An agent skill for turning your notes, articles, screenshots, and data into explanatory visuals for documents, slides, and websites—with reference research, deliberate composition, and magnified label review built into the workflow.
+
+[Get started](#get-started) · [Try a prompt](#try-a-prompt) · [Machine integration](#give-your-diagrams-a-mechanical-mind) · [How it works](#from-source-to-finished-visual)
 
 </div>
 
 ---
 
-## Why this exists
+## One image. A clearer idea.
 
-Every doc, deck, and landing page has one image that carries the argument. Image models can draw it beautifully now — soft 3D material objects, clean Swiss editorial composition, labels printed right on the parts.
+A dense paragraph becomes a review loop. A confusing system becomes a layered diagram. A pump becomes a cutaway that shows where fluid enters, what moves it, and where it leaves.
 
-The catch: **baked-in text fails silently.** Ask for `Misalignment` and the model hands back `Misaiignment`. At full size the word looks fine. It passes a glance. It ships. Someone notices in the boardroom.
+**Context Image helps your agent decide what the picture needs to explain before it decides what the picture should look like.**
 
-`context-image` treats the illustration as a deliverable with a QA gate, not a lucky render. It plans the image, picks a backend that can actually spell, generates, then slices the result into upscaled tiles and reads every label back character by character. Any mismatch is a regeneration, never a shrug.
+The result is a focused visual asset: short labels, purposeful arrows, tactile materials, and enough detail to make the mechanism understandable. Use it inside your existing deck, report, article, or landing page.
 
-## What you get
+## What can you make?
 
-| You give it | It produces |
-|---|---|
-| A paragraph explaining a loop, pipeline, or system | A labeled 3D diagram in the right structure (cycle, pipeline, hub-and-spoke, before/after, layer stack) |
-| A chart screenshot or a raw table | The same data redrawn in the house style — values kept exact, source styling discarded |
-| A scientific mechanism, historical scene, or unfamiliar object | A reference-checked illustration that gets the structure right before it gets it pretty |
-| A vague "make this section look better" | The one cognitive anchor worth illustrating, plus the prompt record so you can reproduce it |
+| Start with | Create |
+| --- | --- |
+| Notes about a workflow | A cycle, pipeline, or hub-and-spoke diagram |
+| A product or architecture explanation | A layer stack, concept breakdown, or before/after image |
+| A table or chart screenshot | A restyled chart visual, with values, units, order, and error bars checked against the source |
+| A machine or physical mechanism | A labeled cutaway, exploded assembly, or flow illustration |
+| A scientific, historical, or cultural subject | A reference-informed illustration with clear evidence boundaries |
+| A request for interactive machine behavior | An optional handoff to **Machine** for a code-rendered model or film |
 
-The house look: off-white studio ground, black ink outlines, refined gray surfaces, **one** accent color per image set, no webfonts, no icon libraries, no gradient blobs, no fake app chrome.
+**The visual language:** Swiss editorial composition, material-style 3D objects, restrained surfaces, soft lighting, and one intentional accent. Bring your own brand palette, choose light or dark, and keep the set consistent.
 
-## Quick start
+## Get started
 
-```bash
-git clone https://github.com/succtorlin/context-image ~/.claude/skills/context-image
-python3 -m pip install --user Pillow
-```
+Install the skill in your agent's global skill directory. Choose **one** command:
 
-Claude Code discovers anything in `~/.claude/skills/` automatically. Then, in any session:
-
-```text
-/context-image  Draw the review loop from this section: draft → AI pass → human check → next round
-```
-
-```text
-Turn this benchmark table into a report figure, 4:3, keep the exact numbers
-```
-
-```text
-这段讲的是复利效应，帮我画一张带字的解释图
-```
-
-The skill routes the mode itself — you never have to say "cycle diagram" or "chart beautify". Before the first real run, point it at an image backend (see [Configure a backend](#configure-a-backend)).
-
-## How a run works
-
-1. **Read** the source and pick the 1–6 ideas that deserve an image. Not every paragraph gets one.
-2. **Extract**, not inherit. For charts: type, title, values, axes, units, order, error bars. Nothing about the source's colors or fonts survives.
-3. **Look it up** when the subject is visually specific — an apparatus, a species, a cultural artifact, a product — so the drawing is structurally right.
-4. **Compress** each concept into a plain-language explanation and 3–5 short labels.
-5. **Choose a structure**: cycle, pipeline, hub-and-spoke, before/after, layer stack, data-first scene, mechanism, or text scene.
-6. **Write one prompt per image** with exact label strings, aspect ratio, safe margins, references, and the shared style block.
-7. **Generate** through the configured backend.
-8. **Proofread under magnification.** This step is mandatory, and it is the reason this fork exists.
-9. **Record** prompt, output path, and proofread result in the task folder so the set is reproducible.
-
-## The proofread step
+**Codex**
 
 ```bash
-python3 scripts/proofread.py OUT.png                      # 2x2 grid, 2x upscale
-python3 scripts/proofread.py OUT.png --band 0.42 0.65     # one horizontal strip
-python3 scripts/proofread.py OUT.png --grid 3x2 --zoom 3  # dense or small lettering
+git clone https://github.com/succtorlin/context-image.git ~/.codex/skills/context-image
 ```
 
-The script slices a render into overlapping, upscaled tiles and prints their paths. No OCR — stylized 3D lettering defeats it, and the agent already has vision. The job is purely to make every label big enough to read reliably.
+**Claude Code**
 
-The agent then walks a fixed checklist on every tile:
+```bash
+git clone https://github.com/succtorlin/context-image.git ~/.claude/skills/context-image
+```
 
-1. **Spelling**, letter by letter, longest word first. Watch `l`↔`i`, `rn`↔`m`, doubled letters.
-2. **Invented content.** Any number, unit, or caption the prompt didn't ask for is a defect, however plausible.
-3. **Object count.** Ask for three instruments, count three.
-4. **Numerals in monospace** where the brand requires it.
-5. **Clipping** at any frame edge.
+The magnified-review helper requires Python and Pillow. Install Pillow into your preferred Python environment:
 
-When a label fails, the fix is to shorten it below the measured ceiling — not to rerun the same prompt and hope. The same string tends to fail the same way.
+```bash
+python3 -m pip install Pillow
+```
 
-## Label ceilings (measured, not guessed)
-
-Upstream mandates Chinese labels at 2–5 characters. For English we measured GPT Image across repeated renders and found **two different limits** depending on where the text sits:
-
-| Where the text sits | Safe ceiling | Evidence |
-|---|---|---|
-| Floating callout on quiet background | ~14 characters | `Schedule data`, `Metrics layer`, `Provost view` — correct in every render |
-| Printed **on an object** (plate, badge, chip) | **10 characters** | `Balance` (7) ✓ · `Bottlenecks` (11) ✓ · `Misalignment` (12) → `Misaiignment` |
-
-Longer words go on two lines, get abbreviated, or move to a floating callout.
-
-## Configure a backend
-
-Labels render inside the image, so **text fidelity picks the model**. GPT Image and Gemini image models render embedded text reliably; FLUX historically garbles it. Never choose on speed or cost when the image carries labels.
-
-[`ADAPTER.md §1`](ADAPTER.md) defines a priority ladder over commonly available image-generation skills and the exact invocation shape (prompt passed as a file, explicit provider flag, aspect ratio by destination). If no backend is configured, the skill stops after writing the prompt plan and says so plainly. It will never present an ungenerated plan as a finished image.
-
-## Bring your own brand
-
-The default accent is IKB blue `#002FA7`. [`ADAPTER.md §4`](ADAPTER.md) shows a complete override — dual light/dark grounds, a single accent, semantic colors reserved for their meaning, monospace numerals — as a worked example. Swap in your own tokens and every image in a set will sit inside your product without a seam.
-
-## Layout
+Then ask your agent:
 
 ```text
-context-image/
-├── SKILL.md              # the workflow the agent follows
-├── ADAPTER.md            # backend routing · label ceilings · proofread rules · brand preset
-├── scripts/
-│   └── proofread.py      # post-render magnification for label QA
+Use context-image to explain this workflow as a labeled 16:9 illustration:
+Upload → Process → Review → Share.
+Use a warm light background, one gold accent, and short English labels.
+```
+
+In Codex, you can invoke `$context-image`; in Claude Code, use `/context-image`. If the newly installed skill is not listed, start a fresh session.
+
+**Image generation:** the skill prefers the host's built-in image tool when available. Otherwise, configure a supported backend using [ADAPTER.md](ADAPTER.md). Without a working backend, it delivers a prompt plan and explicitly reports that no image was generated.
+
+## Try a prompt
+
+### Explain a system
+
+```text
+Use context-image to turn these notes into one diagram for a presentation.
+Show how an AI draft moves through human review and revision.
+Use four short labels, generous margins, and a single blue accent.
+```
+
+### Reveal a mechanism
+
+```text
+Use context-image to explain a centrifugal pump with a labeled cutaway.
+Show the inlet, impeller, casing, and outlet, with the flow direction visible.
+Research the structure first. Keep it a static 4:3 teaching illustration.
+```
+
+### Show how the parts fit
+
+```text
+Use context-image to create an exploded view of a mechanical watch movement.
+Keep parts aligned along their assembly axes and label only the key assemblies.
+Use reference-grounded proportions and distinguish metal from glass.
+```
+
+### Make data readable
+
+```text
+Use context-image to restyle this chart for a report.
+Keep every supplied value, unit, category, and error bar unchanged.
+Use a restrained material style and check the result against the source table.
+```
+
+### Create in Chinese
+
+```text
+用 context-image 把这段内容画成一张带字解释图。
+用 3–5 个简短标签，一张图讲清一个核心概念，适合放进汇报 PPT。
+```
+
+## Give your diagrams a mechanical mind
+
+The new [Machine integration](references/machine-integration.md) brings physical construction principles into Context Image:
+
+- **Parts that fit:** connected pipes, aligned shafts, seated bearings, and believable supports.
+- **Cutaways that explain:** visible wall thickness and solid section faces.
+- **Exploded views that retain structure:** components separate along plausible assembly axes.
+- **Materials that read differently:** metal, rubber, glass, and painted surfaces have distinct treatments.
+- **Flows with a source and destination:** vapor emerges from a nozzle; fluid follows a channel; heat effects carry meaning.
+
+A request for a still image stays a still image. You do not need Machine installed to use the static illustration guidance.
+
+For **interactive 3D, calculated behavior, or machine video**, install the separate [AirsupHQ/machine-skill](https://github.com/AirsupHQ/machine-skill):
+
+```bash
+# Codex
+git clone https://github.com/AirsupHQ/machine-skill.git ~/.codex/skills/machine
+
+# Claude Code: use ~/.claude/skills/machine as the destination instead.
+```
+
+Then try:
+
+```text
+Use context-image with Machine to build an interactive pump explainer.
+Let me adjust the input, inspect the cutaway, and see the model's flow estimate.
+Explain the equations and simplifications. Deliver HTML only.
+```
+
+Machine is an optional runtime dependency, not bundled code. Rendering requires the tools described in its documentation, including a suitable browser; recording also needs Node, Playwright/Chromium, and FFmpeg. Its HTML may load CDN dependencies. A convincing illustration is not a validated simulation, and a simplified simulation is not manufacturing-grade CAD, CFD, or FEA.
+
+## From source to finished visual
+
+```mermaid
+flowchart LR
+    A[Your source] --> B[Find the explanatory idea]
+    B --> C[Research and structure]
+    C --> D[Compose and generate]
+    D --> E[Inspect and proofread]
+    E --> F[Image and prompt record]
+    E -->|Correction needed| D
+```
+
+1. **Understand:** select the concept worth illustrating and the intended audience.
+2. **Ground:** gather references for visually specific subjects; extract chart data without inheriting the old styling.
+3. **Compose:** choose a structure, one visual emphasis, and usually 3–5 short labels.
+4. **Generate:** specify exact text, aspect ratio, safe margins, materials, and references.
+5. **Review:** inspect the image, magnify labels, compare values, and correct defects.
+6. **Deliver:** save the asset, prompt, sources, and review outcome in the task folder.
+
+## Beautiful images still need proofreading
+
+Image models can silently substitute a character. `Misalignment` can become `Misaiignment` while looking correct at a glance.
+
+Context Image includes a helper that creates enlarged review tiles:
+
+```bash
+# Run from the installed skill directory, or use the script's full path.
+python3 scripts/proofread.py OUT.png
+python3 scripts/proofread.py OUT.png --band 0.42 0.65
+python3 scripts/proofread.py OUT.png --grid 3x2 --zoom 3
+```
+
+**The script prepares the tiles; the agent reads them.** It is not an automatic spelling checker or a guarantee of correctness. The workflow checks exact label strings, invented numbers, object counts, clipping, and label targets before delivery.
+
+English labels generally work best at **1–3 words**; Chinese labels at **2–5 characters**. The adapter records conservative length heuristics from a small set of earlier renders. Those are starting points, not universal model limits—every final image still needs inspection.
+
+For data visuals, compare the final rendering against the original values and geometry. If exact plotting cannot be preserved by image generation, use a deterministic charting tool for the chart itself and keep generated illustration separate.
+
+## Your brand, your format
+
+Specify the label language, aspect ratio, destination, and brand colors in the request. The adapter includes a gold light/dark palette as a worked example; the underlying visual reference uses blue. Your explicit palette takes priority.
+
+| Destination | Useful starting ratio |
+| --- | --- |
+| Slides and wide landing sections | 16:9 |
+| Documents and report figures | 4:3 |
+| Portrait social-card inserts | 3:4 |
+| Square illustration slots | 1:1 |
+
+Context Image creates the **visual inside the layout**. Continue using your slide or social-card skill for the surrounding typography, page structure, and presentation.
+
+## What's in the skill?
+
+| File | Purpose |
+| --- | --- |
+| [SKILL.md](SKILL.md) | Main workflow and routing |
+| [ADAPTER.md](ADAPTER.md) | Image backends, language guidance, proofreading, and brand examples |
+| [machine-integration.md](references/machine-integration.md) | Physical illustration guidance and optional Machine handoff |
+| [visual-style.md](references/visual-style.md) | The material illustration system |
+| [prompt-patterns.md](references/prompt-patterns.md) | Reusable diagram structures |
+| [chart-beautify.md](references/chart-beautify.md) | Chart extraction and preservation rules |
+| [reference-gathering.md](references/reference-gathering.md) | Visual research guidance |
+| [qa-checklist.md](references/qa-checklist.md) | Final review checklist |
+| [proofread.py](scripts/proofread.py) | Magnified review tiles |
+
+A typical task produces:
+
+```text
+local-tests/your-concept/
 ├── assets/
-│   └── prompt-template.md
-└── references/           # visual style, prompt patterns, chart rules,
-                          #   use-case routing, reference gathering, QA checklist
+│   └── explanatory-image.png
+└── PROMPTS.md
 ```
 
-## Credit and license
+Optional interactive work adds task-local scene source and requested exports. Installed skill directories remain reusable instructions, not output folders.
 
-This is an adaptation of **[op7418/guizang-material-illustration](https://github.com/op7418/guizang-material-illustration)** by 歸藏 (op7418). The methodology, the visual system, and everything under `references/` are that project's work. This fork adds the operational layer described above — a real backend, measured English label limits, and the mandatory proofread — and nothing more.
+## Credits and provenance
 
-The upstream repository carries **no license file**, so its author retains all rights by default. If you intend to redistribute or build on this beyond personal use, seek permission from the original author first. Upstream is kept as a git remote so provenance stays traceable:
+Context Image adapts [op7418/guizang-material-illustration](https://github.com/op7418/guizang-material-illustration) by 歸藏 (op7418). The original illustration methodology and base visual references come from that project.
 
-```bash
-git fetch upstream && git diff HEAD upstream/main -- references/
-```
+This adaptation adds the operational adapter, English-label guidance, magnified review workflow, and the new Machine integration reference. Mechanical guidance is informed by [AirsupHQ/machine-skill](https://github.com/AirsupHQ/machine-skill); its runtime remains a separate installation.
 
-`references/` is the part worth re-syncing. `SKILL.md` carries local edits, so merge it by hand.
+This repository does not currently include a license file. Preserve attribution and check the respective upstream terms before redistribution; this README does not grant additional rights to upstream material.
+
+---
+
+<div align="center">
+
+**Bring the idea. Give it a shape people can understand.**
+
+</div>
