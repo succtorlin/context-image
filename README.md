@@ -22,6 +22,37 @@ A dense paragraph becomes a review loop. A confusing system becomes a layered di
 
 The result is a focused visual asset: short labels, purposeful arrows, tactile materials, and enough detail to make the mechanism understandable. Use it inside your existing deck, report, article, or landing page.
 
+## See what it makes
+
+These examples were generated for this repository with the built-in image tool and reviewed visually, including magnified label checks. They demonstrate static illustration outputs; the pump is a simplified conceptual cutaway, not CAD or a computed simulation.
+
+### From a workflow to a visual explanation
+
+![Four material-style stations labeled Draft, AI pass, Review, and Share, linked by gold arrows with a revision arrow from Review back to AI pass.](assets/examples/review-workflow.png)
+
+**The idea:** make a review-and-revision workflow readable at a glance.
+
+```text
+Use context-image to illustrate Draft → AI pass → Review → Share.
+Include a return arrow from Review to AI pass for revisions.
+Use short English labels, warm ivory surfaces, and one gold accent. 16:9.
+```
+
+### From a mechanism to a labeled cutaway
+
+![Simplified centrifugal pump cutaway with labels for Inlet, Impeller, Casing, and Outlet; gold arrows illustrate the path into the center and toward the upper discharge.](assets/examples/pump-cutaway.png)
+
+**The idea:** reveal the parts and flow path normally hidden by a pump's casing. This example applies the new Machine-informed illustration guidance without requiring an interactive build.
+
+```text
+Use context-image to explain a centrifugal pump with a cutaway.
+Label Inlet, Impeller, Casing, and Outlet. Show the flow direction.
+Use a warm studio background and restrained metal-and-gold materials.
+Deliver a static teaching illustration, not a simulation.
+```
+
+[View the full generation prompts, reference source, and review notes](assets/examples/PROMPTS.md).
+
 ## What can you make?
 
 | Start with | Create |
